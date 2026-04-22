@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PrimaNova Trainer</title>
+    <meta
+      name="description"
+      content="Mobiler Vokabeltrainer fuer PrimaNova mit Lektionenfilter und Karteikastenlogik."
+    />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Demo fuer Kollegium und Schule</p>
+          <h1>PrimaNova Trainer. Vokabellernen, das sich dem Lernstand anpasst.</h1>
+          <p class="hero-text">
+            Ein mobiler Lerntrainer fuer Latein, der Lektionen filtert, falsche Karten
+            schneller zurueckbringt und sichere Begriffe in groesseren Intervallen
+            wiederholt.
+          </p>
+          <div class="hero-pills">
+            <span>Klassenstand filterbar</span>
+            <span>Handyfreundlich</span>
+            <span>Leitner-Logik</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-badge">Pitch-Modus</div>
+          <p>
+            Gedacht als erste Demo fuer Fachschaft, Schulleitung oder IT:
+            schnell testbar, ohne Registrierung, mit lokal gespeichertem Lernstand.
+          </p>
+          <div class="hero-metric">
+            <strong>23</strong>
+            <span>Lektionen bereits vorbereitet</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="story-strip">
+        <article class="story-card">
+          <span class="story-step">1</span>
+          <h2>Bis wohin ist die Klasse?</h2>
+          <p>
+            Lehrkraft oder Schueler waehlt einfach den aktuellen Stoffstand, zum Beispiel
+            bis Lektion 23.
+          </p>
+        </article>
+        <article class="story-card">
+          <span class="story-step">2</span>
+          <h2>Wie soll abgefragt werden?</h2>
+          <p>
+            Der Trainer mischt freie Eingabe und Auswahlfragen, damit Lernen und Testen
+            kombiniert werden.
+          </p>
+        </article>
+        <article class="story-card">
+          <span class="story-step">3</span>
+          <h2>Was passiert mit Fehlern?</h2>
+          <p>
+            Unsichere Karten kommen frueher wieder. Sichere Karten wandern in spaetere
+            Wiederholungsabstaende.
+          </p>
+        </article>
+      </section>
+
+      <main class="layout">
+        <section class="panel controls-panel">
+          <div class="section-head">
+            <h2>Demo Starten</h2>
+            <p>So koennte eine Schuelerin oder ein Schueler die App sofort benutzen.</p>
+          </div>
+
+          <div class="control-grid">
+            <label class="field">
+              <span>Von Lektion</span>
+              <select id="lesson-start"></select>
+            </label>
+
+            <label class="field">
+              <span>Bis Lektion</span>
+              <select id="lesson-end"></select>
+            </label>
+
+            <label class="field">
+              <span>Antwortmodus</span>
+              <select id="mode-select">
+                <option value="mixed">Mix aus Eingabe und Auswahl</option>
+                <option value="free">Freie Eingabe mit Selbstcheck</option>
+                <option value="multiple">Nur Auswahl</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Sessiongroesse</span>
+              <select id="session-size">
+                <option value="10">10 Karten</option>
+                <option value="15" selected>15 Karten</option>
+                <option value="20">20 Karten</option>
+                <option value="25">25 Karten</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="stats-grid" id="overview-stats"></div>
+
+          <div class="actions">
+            <button class="primary-btn" id="start-session">Lernsession starten</button>
+            <button class="ghost-btn" id="reset-progress">Lernstand zuruecksetzen</button>
+          </div>
+
+          <div class="note-box">
+            <strong>So kann man die Demo erklaeren</strong>
+            <p>
+              Der Schueler stellt den aktuellen Lernstand ein, startet eine Session und
+              bekommt genau die Vokabeln, die bis zu diesem Abschnitt relevant sind. Die
+              Wiederholung passt sich dabei an richtige und falsche Antworten an.
+            </p>
+          </div>
+        </section>
+
+        <section class="panel trainer-panel">
+          <div class="section-head">
+            <h2>Live-Demo</h2>
+            <p id="session-headline">Noch keine Session aktiv.</p>
+          </div>
+
+          <div id="empty-state" class="empty-state">
+            <p>Starte links eine Session, um mit dem Training zu beginnen.</p>
+          </div>
+
+          <div id="trainer" class="trainer hidden">
+            <div class="progress-row">
+              <div class="progress-meta">
+                <span id="progress-count">0 / 0</span>
+                <span id="progress-mode">Modus</span>
+              </div>
+              <div class="progress-bar">
+                <div id="progress-fill"></div>
+              </div>
+            </div>
+
+            <article class="card-stage">
+              <div class="card-meta">
+                <span id="card-lesson">Lektion</span>
+                <span id="card-box">Fach</span>
+              </div>
+              <div class="prompt-label">Latein</div>
+              <h3 id="card-front" class="card-front"></h3>
+              <p id="card-context" class="card-context"></p>
+            </article>
+
+            <section id="multiple-choice" class="answer-panel hidden">
+              <div class="option-grid" id="option-grid"></div>
+            </section>
+
+            <section id="free-answer" class="answer-panel hidden">
+              <label class="field">
+                <span>Deine Uebersetzung</span>
+                <textarea
+                  id="free-input"
+                  rows="3"
+                  placeholder="z. B. warten, erwarten"
+                ></textarea>
+              </label>
+              <div class="actions">
+                <button class="primary-btn" id="reveal-answer">Antwort zeigen</button>
+              </div>
+            </section>
+
+            <section id="feedback-panel" class="feedback-panel hidden">
+              <p class="solution-label">Loesung</p>
+              <p id="solution-text" class="solution-text"></p>
+              <p id="selfcheck-copy" class="selfcheck-copy"></p>
+              <div class="actions">
+                <button class="success-btn" id="mark-correct">Hatte ich richtig</button>
+                <button class="danger-btn" id="mark-wrong">Nochmal zeigen</button>
+              </div>
+            </section>
+          </div>
+
+          <div id="session-summary" class="summary hidden"></div>
+        </section>
+      </main>
+
+      <section class="demo-footer">
+        <div class="panel footer-panel">
+          <div>
+            <p class="eyebrow">Wofuer diese Demo gedacht ist</p>
+            <h2>Ein greifbarer Vorschlag statt nur einer Idee.</h2>
+          </div>
+          <div class="footer-points">
+            <p>Mobil nutzbar auf Schuelergeraeten.</p>
+            <p>Einfacher Einstieg ohne Account-Zwang im Prototypen.</p>
+            <p>Ausbaubar in Richtung DSGVO, Schul-Login und Adminbereich.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="review-section">
+        <div class="panel review-panel">
+          <div class="section-head">
+            <h2>Feedback zur Demo</h2>
+            <p>Gedacht fuer Lehrkraft, Kollegium oder IT als erste strukturierte Rueckmeldung.</p>
+          </div>
+
+          <div class="review-grid">
+            <article class="review-card">
+              <span class="review-kicker">Bitte beim Testen beachten</span>
+              <h3>Worauf man schauen sollte</h3>
+              <ul class="review-list">
+                <li>Ist der Lektionenfilter fuer euren Schulalltag logisch?</li>
+                <li>Fuehlt sich die Abfrage fuer Schuelerinnen und Schueler motivierend an?</li>
+                <li>Reagiert die Wiederholung sinnvoll auf richtige und falsche Antworten?</li>
+                <li>Waere das auf Handy oder Tablet praktikabel?</li>
+              </ul>
+            </article>
+
+            <article class="review-card">
+              <span class="review-kicker">Schnellantwort</span>
+              <h3>Feedback direkt hier vorbereiten</h3>
+              <label class="field">
+                <span>Gesamteindruck</span>
+                <select id="feedback-rating">
+                  <option value="Sehr spannend">Sehr spannend</option>
+                  <option value="Grundsaetzlich gut">Grundsaetzlich gut</option>
+                  <option value="Noch unklar">Noch unklar</option>
+                  <option value="Eher nicht passend">Eher nicht passend</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Was wirkt schon stark?</span>
+                <textarea id="feedback-strength" rows="3" placeholder="z. B. Lernlogik, mobile Bedienung, Stofffilter"></textarea>
+              </label>
+              <label class="field">
+                <span>Was fehlt oder stoert noch?</span>
+                <textarea id="feedback-gap" rows="3" placeholder="z. B. vollstaendige Daten, Login, Adminbereich, Designfragen"></textarea>
+              </label>
+              <label class="field">
+                <span>Wuerdet ihr so etwas weiter pruefen?</span>
+                <select id="feedback-next">
+                  <option value="Ja, unbedingt">Ja, unbedingt</option>
+                  <option value="Ja, nach Anpassungen">Ja, nach Anpassungen</option>
+                  <option value="Vielleicht">Vielleicht</option>
+                  <option value="Nein">Nein</option>
+                </select>
+              </label>
+              <div class="actions">
+                <button class="primary-btn" id="copy-feedback">Feedback kopieren</button>
+                <button class="ghost-btn" id="email-feedback">Per Mail vorbereiten</button>
+              </div>
+              <p id="feedback-status" class="feedback-status"></p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="./data/primanova-data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

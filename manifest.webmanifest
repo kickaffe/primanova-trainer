@@ -1,0 +1,11 @@
+{
+  "name": "PrimaNova Trainer",
+  "short_name": "PrimaNova",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4efe7",
+  "theme_color": "#c44f1b",
+  "lang": "de",
+  "description": "Mobiler Vokabeltrainer mit Leitner-System fuer PrimaNova.",
+  "icons": []
+}
